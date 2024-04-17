@@ -5,12 +5,14 @@
 Performs pN-pK parameter sweeps on a 10,000-cell subset of a pre-processed Seurat object. Will use all cells if Seurat object contains less than 10,000 cells. Results are fed into 'summarizeSweep' and 'find.pK' functions during optimal pK parameter selection workflow. Parameters tested: pN = 0.05-0.3, pK = 0.0005-0.3.
 }
 \usage{
-sweep.list <- paramSweep(seu, PCs, sct=FALSE)
+sweep.list <- paramSweep(seu, PCs, singlets=NULL, sct=FALSE)
 }
 \arguments{
   \item{seu}{ A fully-processed Seurat object (i.e., After NormalizeData, FindVariableGenes, ScaleData, RunPCA, and RunTSNE have all been performed).
   }
   \item{PCs}{ Number of statistically-significant principal components (e.g., as estimated from PC elbow plot)
+  }
+  \item{singlets}{ A character vector of cell IDs to be used to simulate the artificial doublets (default = NULL will use all cells in the Seurat object).
   }
   \item{sct}{ Logical representing whether SCTransform was used during original Seurat object pre-processing (default = FALSE).
   }

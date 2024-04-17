@@ -6,7 +6,7 @@ Internal parallelization function for paramSweep.
 }
 \usage{
 **NOT RUN**
-parallel_paramSweep(n, n.real.cells, real.cells, pK, pN, data, orig.commands, PCs, sct)
+parallel_paramSweep(n, n.real.cells, real.cells, singlets, pK, pN, data, orig.commands, PCs, sct)
 }
 \arguments{
   \item{n}{ pN iteration counter.
@@ -14,6 +14,8 @@ parallel_paramSweep(n, n.real.cells, real.cells, pK, pN, data, orig.commands, PC
   \item{n.real.cells}{ Number of real cells. Set automatically during paramSweep_v3.
   }
   \item{real.cells}{ Vector of real cell IDs. Set automatically during paramSweep_v3.
+  }
+  \item{singlets}{ A character vector of cell IDs to be used to simulate the artificial doublets.
   }
   \item{pK}{ The PC neighborhood size used to compute pANN, expressed as a proportion of the merged real-artificial data. No default is set, as pK should be adjusted for each scRNA-seq dataset. Optimal pK values can be determined using mean-variance-normalized bimodality coefficient.
   }

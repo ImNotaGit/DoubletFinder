@@ -1,4 +1,4 @@
-parallel_paramSweep <- function(n, n.real.cells, real.cells, pK, pN, data, orig.commands, PCs, sct)  {
+parallel_paramSweep <- function(n, n.real.cells, real.cells, singlets, pK, pN, data, orig.commands, PCs, sct)  {
 
   sweep.res.list = list()
   list.ind = 0
@@ -6,8 +6,8 @@ parallel_paramSweep <- function(n, n.real.cells, real.cells, pK, pN, data, orig.
   ## Make merged real-artifical data
   print(paste("Creating artificial doublets for pN = ", pN[n]*100,"%",sep=""))
   n_doublets <- round(n.real.cells/(1 - pN[n]) - n.real.cells)
-  real.cells1 <- sample(real.cells, n_doublets, replace = TRUE)
-  real.cells2 <- sample(real.cells, n_doublets, replace = TRUE)
+  real.cells1 <- sample(singlets, n_doublets, replace = TRUE)
+  real.cells2 <- sample(singlets, n_doublets, replace = TRUE)
   doublets <- (data[, real.cells1] + data[, real.cells2])/2
   colnames(doublets) <- paste("X", 1:n_doublets, sep = "")
   data_wdoublets <- cbind(data, doublets)

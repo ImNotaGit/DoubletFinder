@@ -1,4 +1,4 @@
-doubletFinder <- function(seu, PCs, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct = FALSE, annotations = NULL) {
+doubletFinder <- function(seu, PCs, singlets=NULL, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct = FALSE, annotations = NULL) {
   require(Seurat); require(fields); require(KernSmooth)
 
   ## Generate new list of doublet classificatons from existing pANN vector to save time
@@ -13,12 +13,13 @@ doubletFinder <- function(seu, PCs, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct
   if (reuse.pANN == FALSE) {
     ## Make merged real-artifical data
     real.cells <- rownames(seu@meta.data)
-    data <- seu@assays$RNA$counts[, real.cells]
+    data <- GetAssayData(seu, assay="RNA", slot="counts")
     n_real.cells <- length(real.cells)
     n_doublets <- round(n_real.cells/(1 - pN) - n_real.cells)
+    if (is.null(singlets)) singlets <- real.cells
     print(paste("Creating",n_doublets,"artificial doublets...",sep=" "))
-    real.cells1 <- sample(real.cells, n_doublets, replace = TRUE)
-    real.cells2 <- sample(real.cells, n_doublets, replace = TRUE)
+    real.cells1 <- sample(singlets, n_doublets, replace = TRUE)
+    real.cells2 <- sample(singlets, n_doublets, replace = TRUE)
     doublets <- (data[, real.cells1] + data[, real.cells2])/2
     colnames(doublets) <- paste("X", 1:n_doublets, sep = "")
     data_wdoublets <- cbind(data, doublets)

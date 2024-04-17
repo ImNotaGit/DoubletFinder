@@ -1,4 +1,4 @@
-paramSweep <- function(seu, PCs=1:10, sct = FALSE, num.cores=1) {
+paramSweep <- function(seu, PCs=1:10, singlets=NULL, sct = FALSE, num.cores=1) {
   require(Seurat); require(fields); require(parallel)
   ## Set pN-pK param sweep ranges
   pK <- c(0.0005, 0.001, 0.005, seq(0.01,0.3,by=0.01))
@@ -15,13 +15,15 @@ paramSweep <- function(seu, PCs=1:10, sct = FALSE, num.cores=1) {
   ## Down-sample cells to 10000 (when applicable) for computational effiency
   if (nrow(seu@meta.data) > 10000) {
     real.cells <- rownames(seu@meta.data)[sample(1:nrow(seu@meta.data), 10000, replace=FALSE)]
-    data <- seu@assays$RNA$counts[ , real.cells]
+    if (is.null(singlets)) singlets <- real.cells else singlets <- singlets[singlets %in% real.cells]
+    data <- GetAssayData(seu, assay="RNA", slot="counts")[, real.cells]
     n.real.cells <- ncol(data)
   }
 
   if (nrow(seu@meta.data) <= 10000){
     real.cells <- rownames(seu@meta.data)
-    data <- seu@assays$RNA$counts
+    if (is.null(singlets)) singlets <- real.cells
+    data <- GetAssayData(seu, assay="RNA", slot="counts")
     n.real.cells <- ncol(data)
   }
 
@@ -34,6 +36,7 @@ paramSweep <- function(seu, PCs=1:10, sct = FALSE, num.cores=1) {
                         FUN = parallel_paramSweep,
                         n.real.cells,
                         real.cells,
+                        singlets,
                         pK,
                         pN,
                         data,
@@ -46,6 +49,7 @@ paramSweep <- function(seu, PCs=1:10, sct = FALSE, num.cores=1) {
                       FUN = parallel_paramSweep,
                       n.real.cells,
                       real.cells,
+                      singlets,
                       pK,
                       pN,
                       data,

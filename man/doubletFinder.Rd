@@ -5,12 +5,14 @@
 Core doublet prediction function of the DoubletFinder package. Generates artifical doublets from an existing, pre-processed Seurat object. Real and artificial data are then merged and pre-processed using parameters utilized for the existing Seurat object. PC distance matrix is then computed and used the measure the proportion of artificial nearest neighbors (pANN) for every real cell. pANN is then thresholded according to the number of expected doublets to generate final doublet predictions.
 }
 \usage{
-doubletFinder(seu, PCs, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct = FALSE)
+doubletFinder(seu, PCs, singlets = NULL, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct = FALSE)
 }
 \arguments{
   \item{seu}{ A fully-processed Seurat object (i.e., After NormalizeData, FindVariableGenes, ScaleData, and RunPCA have all been performed).
   }
   \item{PCs}{ Number of statistically-significant principal components (e.g., as estimated from PC elbow plot)
+  }
+  \item{singlets}{ A character vector of cell IDs to be used to simulate the artificial doublets (default = NULL will use all cells in the Seurat object).
   }
   \item{pN}{ The number of generated artificial doublets, expressed as a proportion of the merged real-artificial data. Default is set to 0.25, based on observation that DoubletFinder performance is largely pN-invariant (see McGinnis, Murrow and Gartner 2019, Cell Systems).
   }
