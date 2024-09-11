@@ -1,16 +1,18 @@
 doubletFinder <- function(seu, PCs, singlets=NULL, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct = FALSE, annotations = NULL) {
   require(Seurat); require(fields); require(KernSmooth)
 
-  ## Generate new list of doublet classificatons from existing pANN vector to save time
-  if (reuse.pANN != FALSE ) {
-    pANN.old <- seu@meta.data[ , reuse.pANN]
+  if (!isFALSE(reuse.pANN)) {
+    ## Generate new list of doublet classificatons from existing pANN vector to save time
+    if (is.character(reuse.pANN)) {
+      pANN.old <- seu@meta.data[ , reuse.pANN]
+    } else if (is.data.frame(reuse.pANN)) {
+      pANN.old <- reuse.pANN[, 1]
+    }
     classifications <- rep("Singlet", length(pANN.old))
     classifications[order(pANN.old, decreasing=TRUE)[1:nExp]] <- "Doublet"
     seu@meta.data[, paste("DF.classifications",pN,pK,nExp,sep="_")] <- classifications
     return(seu)
-  }
-
-  if (reuse.pANN == FALSE) {
+  } else {
     ## Make merged real-artifical data
     real.cells <- rownames(seu@meta.data)
     data <- GetAssayData(seu, assay="RNA", slot="counts")
