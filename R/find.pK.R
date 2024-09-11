@@ -1,4 +1,11 @@
-find.pK <- function(sweep.stats) {
+find.pK <- function(sweep.stats, do.plot=TRUE) {
+
+  if (do.plot) {
+    if (!requireNamespace("ggplot2", quietly=TRUE)) {
+      stop("Package \"ggplot2\" required for plotting.")
+    }
+    library(ggplot2)
+  }
 
   ## Implementation for data without ground-truth doublet classifications
   '%ni%' <- Negate('%in%')
@@ -20,10 +27,15 @@ find.pK <- function(sweep.stats) {
     }
 
     ## Plot for visual validation of BCmvn distribution
-    par(mar=rep(1,4))
-    x <- plot(x=bc.mvn$ParamID, y=bc.mvn$BCmetric, pch=16, col="#41b6c4", cex=0.75)
-    x <- lines(x=bc.mvn$ParamID, y=bc.mvn$BCmetric, col="#41b6c4")
-    print(x)
+    if (do.plot) {
+      p <- ggplot(bc.mvn, aes(x=pK, y=BCmetric)) +
+        geom_point(size=0.75, color="#41b6c4") +
+        geom_line(group=1, color="#41b6c4") +
+        geom_vline(xintercept=which.max(bc.mvn$BCmetric), size=0.5, linetype="dashed") +
+        theme_classic() +
+        theme(axis.text.x=element_text(angle=40, hjust=1))
+      print(p)
+    }
 
     return(bc.mvn)
 
