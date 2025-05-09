@@ -1,11 +1,4 @@
-find.pK <- function(sweep.stats, do.plot=TRUE) {
-
-  if (do.plot) {
-    if (!requireNamespace("ggplot2", quietly=TRUE)) {
-      stop("Package \"ggplot2\" required for plotting.")
-    }
-    library(ggplot2)
-  }
+find.pK <- function(sweep.stats) {
 
   ## Implementation for data without ground-truth doublet classifications
   '%ni%' <- Negate('%in%')
@@ -27,18 +20,14 @@ find.pK <- function(sweep.stats, do.plot=TRUE) {
     }
 
     ## Plot for visual validation of BCmvn distribution
-    if (do.plot) {
-      p <- ggplot(bc.mvn, aes(x=pK, y=BCmetric)) +
-        geom_point(size=0.75, color="#41b6c4") +
-        geom_line(group=1, color="#41b6c4") +
-        geom_vline(xintercept=which.max(bc.mvn$BCmetric), size=0.5, linetype="dashed") +
-        theme_classic() +
-        theme(axis.text.x=element_text(angle=40, hjust=1))
-      print(p)
-    }
+    p <- ggplot(bc.mvn, aes(x=pK, y=BCmetric)) +
+      geom_point(size=0.75, color="#41b6c4") +
+      geom_line(group=1, color="#41b6c4") +
+      geom_vline(xintercept=which.max(bc.mvn$BCmetric), size=0.5, linetype="dashed") +
+      theme_classic() +
+      theme(axis.text.x=element_text(angle=40, hjust=1))
 
-    return(bc.mvn)
-
+    return(list(bcmvn=bc.mvn, p=p))
   }
 
   ## Implementation for data with ground-truth doublet classifications (e.g., MULTI-seq, CellHashing, Demuxlet, etc.)
